@@ -9,10 +9,10 @@ import numpy as np
 #TODO 1: modify the following parameters
 #Starting and end index, modify this
 device_st = 0
-device_end = 100
+device_end = 499
 
 #Path to the dataset, modify this
-data_path = "vehicle.csv"
+data_path = "vehicle_data/vehicle.csv"
 
 #Path to your certificates, modify this
 certificate_formatter = "certificate.pem"
