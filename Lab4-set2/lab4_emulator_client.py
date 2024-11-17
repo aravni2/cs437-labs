@@ -15,22 +15,22 @@ device_end = 5
 data_path = "vehicle_data/vehicle{}.csv"
 
 #Path to your certificates, modify this
-certificate_formatter = "certs/Lab4_IoT_Thing-{} cert.pem"
-key_formatter = "private_keys/Lab4_IoT_Thing-{} private.key"
+certificate_formatter = "certs/cs437_Thing-{} cert.pem"
+key_formatter = "private_keys/cs437_Thing-{} private.key"
 
 
 class MQTTClient:
     def __init__(self, device_id, cert, key):
         # For certificate based connection
         #ADDED to code to create separation of device id and device name
-        self.device_name = f'Lab4_IoT_Thing-{device_id}'
+        self.device_name = f'cs437_Thing-{device_id}'
         self.device_id = str(device_id)
 
         self.state = 0
         self.client = AWSIoTMQTTClient(self.device_name)
         #TODO 2: modify your broker address
-        self.client.configureEndpoint("a3s2af5ccebmkg-ats.iot.us-east-2.amazonaws.com", 8883)
-        self.client.configureCredentials("Certs and Keys/AmazonRootCA1.pem", key, cert)
+        self.client.configureEndpoint("apb8nhcywqwx-ats.iot.us-east-2.amazonaws.com", 8883)
+        self.client.configureCredentials("certs_and_keys/AmazonRootCA1.pem", key, cert)
         self.client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
         self.client.configureDrainingFrequency(2)  # Draining: 2 Hz
         self.client.configureConnectDisconnectTimeout(10)  # 10 sec
@@ -83,7 +83,7 @@ for i in range(5):
 print("Initializing MQTTClients...")
 clients = []
 for device_id in range(device_st, device_end):
-    device_name = 'Lab4_IoT_Thing-{}'
+    device_name = 'cs437_Thing-{}'
     print(device_id,certificate_formatter.format(device_id,device_id),key_formatter.format(device_id,device_id) )
     client = MQTTClient(device_id,certificate_formatter.format(device_id) ,key_formatter.format(device_id))
     client.client.connect()
