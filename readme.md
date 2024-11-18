@@ -1,6 +1,6 @@
 #credentials
-ACCESS_KEY = 'AKIAVVZPCGDPP3ATLYXA'
-SECRET_KEY = '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'
+ACCESS_KEY = <fill in own access_key>
+SECRET_KEY = <fill in own secret_key>
 
 #endpoint
 self.client.configureEndpoint("a3s2af5ccebmkg-ats.iot.us-east-2.amazonaws.com", 8883)
