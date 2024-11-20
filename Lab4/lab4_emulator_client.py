@@ -29,7 +29,8 @@ class MQTTClient:
         self.state = 0
         self.client = AWSIoTMQTTClient(self.device_name)
         #TODO 2: modify your broker address
-        self.client.configureEndpoint("a3s2af5ccebmkg-ats.iot.us-east-2.amazonaws.com", 8883)
+        # self.client.configureEndpoint("a3s2af5ccebmkg-ats.iot.us-east-2.amazonaws.com", 8883)
+        self.client.configureEndpoint("apb8nhcywqwx-ats.iot.us-east-2.amazonaws.com", 8883)
         self.client.configureCredentials("Certs and Keys/AmazonRootCA1.pem", key, cert)
         self.client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
         self.client.configureDrainingFrequency(2)  # Draining: 2 Hz
@@ -88,7 +89,7 @@ for device_id in range(device_st, device_end):
     client = MQTTClient(device_id,certificate_formatter.format(device_id) ,key_formatter.format(device_id))
     client.client.connect()
     clients.append(client)
- 
+
 print('current clients',clients)
 while True:
     print("send now?")
