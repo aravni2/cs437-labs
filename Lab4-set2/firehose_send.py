@@ -44,25 +44,25 @@ class FirehoseClient:
         # self.cloudwatch = boto3.client("cloudwatch", region_name=self.region)
 
 
-    def put_record(self, record: dict):
-        """
-        Put individual records to Firehose with backoff and retry.
+    # def put_record(self, record: dict):
+    #     """
+    #     Put individual records to Firehose with backoff and retry.
 
-        Args:
-            record (dict): The data record to be sent to Firehose.
+    #     Args:
+    #         record (dict): The data record to be sent to Firehose.
 
-        This method attempts to send an individual record to the Firehose delivery stream.
-        It retries with exponential backoff in case of exceptions.
-        """
-        try:
-            entry = self._create_record_entry(record)
-            response = self.firehose.put_record(
-                DeliveryStreamName=self.delivery_stream_name, Record=entry
-            )
-            self._log_response(response, entry)
-        except Exception:
-            # logger.info(f"Fail record: {record}.")
-            raise
+    #     This method attempts to send an individual record to the Firehose delivery stream.
+    #     It retries with exponential backoff in case of exceptions.
+    #     """
+    #     try:
+    #         entry = self._create_record_entry(record)
+    #         response = self.firehose.put_record(
+    #             DeliveryStreamName=self.delivery_stream_name, Record=entry
+    #         )
+    #         self._log_response(response, entry)
+    #     except Exception:
+    #         # logger.info(f"Fail record: {record}.")
+    #         raise
 
 
     @backoff.on_exception(
@@ -94,21 +94,28 @@ class FirehoseClient:
                 # logger.info(f"Failed to send batch of {len(batch)} records. Error: {e}")
                 print(e)
 
-data= []
-for i in range(5):
 
 
-    with open('test_json_data.json','r') as file:
-        json_rec = json.load(file)
-        data.append(json_rec)
+if __name__ == '__main__':
+    # create list of payloads to send to firehose
+    data= []
 
-# json_rec = json.loads('''{ 
-#     "TICKER_SYMBOL": "QXZ",
-#     "SECTOR": "HEALTHCARE",
-#     "CHANGE": -0.05,
-#     "PRICE": 84.51
-# }''')
-con = config()
-fh = FirehoseClient(con)
-print(json_rec)
-fh.put_record_batch(data)
+    # test sending data from json file
+    for i in range(5):
+        with open('test_json_data.json','r') as file:
+            json_rec = json.load(file)
+            data.append(json_rec)
+
+    # sample json payload
+    # json_rec = json.loads('''{ 
+    #     "TICKER_SYMBOL": "QXZ",
+    #     "SECTOR": "HEALTHCARE",
+    #     "CHANGE": -0.05,
+    #     "PRICE": 84.51
+    # }''')
+
+    # create connections and send data
+    con = config()
+    fh = FirehoseClient(con)
+    print(json_rec)
+    fh.put_record_batch(data)
