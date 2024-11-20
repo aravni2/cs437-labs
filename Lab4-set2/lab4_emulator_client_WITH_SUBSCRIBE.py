@@ -27,7 +27,6 @@ class MQTTClient:
         #ADDED to code to create separation of device id and device name
         self.device_name = f'cs437_Thing-{device_id}'
         self.device_id = str(device_id)
-
         self.state = 0
         self.client = AWSIoTMQTTClient(self.device_name)
         #TOD 2: modify your broker address
@@ -42,9 +41,11 @@ class MQTTClient:
 
     def customOnMessage(self,message):
         #TOD 3: fill in the function to show your received message
-        payload = {"message" : 'Hello!'}
-        print("client {} received payload {} from topic {}".format(self.device_name,message ,'vehicle/emission/data' ))
-        print('DID THIS WORK!!!!!!!!!')
+        payload = message.payload
+        decoded_payload=json.loads(payload.decode('utf-8'))
+        print("client {} received payload {} from topic {}".format(self.device_name,decoded_payload,'vehicle/emission/data'))
+        print (decoded_payload['status'])
+        # print('DID THIS WORK!!!!!!!!!')
 
 
     # Suback callback
@@ -59,24 +60,34 @@ class MQTTClient:
         pass
 
 
-    def publish(self, topic="vehicle/emission/data"):
+    def publish(self, iter, topic="vehicle/emission/data"):
     # Load the vehicle's emission data
-        print('inside publish',data_path.format(self.device_id))
-        df = pd.read_csv(data_path.format(self.device_id))
+        # print('inside publish',data_path.format(self.device_id))
+        # df = pd.read_csv(data_path.format(self.device_id))
+        print('inside publish, sending data for',data_path.format(iter))
+        df = pd.read_csv(data_path.format(iter))
+        jsonListofDict=[]
         for index, row in df.iterrows():
             # Create a JSON payload from the row data
-            payload = json.dumps(row.to_dict())
-            
+            # payload = json.dumps(row.to_dict())
+            dataTemp = row.to_dict()
+            jsonListofDict.append(dataTemp)
             # Publish the payload to the specified topic
-            print(f"Publishing: {payload} to {topic}")
-            self.client.publishAsync(topic, payload, 0, ackCallback=self.customPubackCallback)
-            
+            # self.client.publishAsync(topic, payload, 0, ackCallback=self.customPubackCallback)
+            # print(f"Publishing: {payload} to {topic}")
+
+        finalPayload={
+        "sdk_version": "0.1.4",
+        "message_id": str(iter),
+        "status": "200",
+        "route": "MaxCO2",
+        "message": jsonListofDict}
+        # print ('vehicle'+str(iter), finalPayload)
+        # print(f"Publishing: {jsonListofDict} to {topic} for Vehicle{self.device_id}")
+        self.client.publishAsync(topic, json.dumps(finalPayload), 0, ackCallback=self.customPubackCallback)
             # Sleep to simulate real-time data publishings
             # time.sleep(1)
             
-
-
-
 print("Loading vehicle data...")
 data = []
 for i in range(5):
@@ -85,7 +96,7 @@ for i in range(5):
 
 print("Initializing MQTTClients...")
 clients = []
-for device_id in range(device_st, device_end):
+for device_id in range(device_st,device_end):
     device_name = 'cs437_Thing-{}'
     print(device_id,certificate_formatter.format(device_id,device_id),key_formatter.format(device_id,device_id) )
     client = MQTTClient(device_id,certificate_formatter.format(device_id) ,key_formatter.format(device_id))
@@ -93,8 +104,10 @@ for device_id in range(device_st, device_end):
 
 
     #TODO: CREATE SUBSCRIBEASYNC FOR TOPICS SPECIFIC TO EACH VEHICLE
-    # client.client.subscribeAsync(topics.format(device_id),0,client.customSubackCallback)
-    client.client.subscribeAsync(topics,0,client.customSubackCallback)
+    # print ('subbing for device: ', topics.format(device_id))
+    print ("subscribing to:", "core/vehicle{}/MaxCO2".format(device_id))
+    client.client.subscribeAsync("core/vehicle{}/MaxCO2".format(device_id),0,client.customSubackCallback)
+    # client.client.subscribeAsync(topics,0,client.customSubackCallback)
     # client.s("vehicle/emission/data")
     clients.append(client)
     
@@ -104,9 +117,10 @@ while True:
     print("send now?")
     x = input()
     if x == "s":
-        for i,c in enumerate(clients):
-            
-            c.publish()
+        for c in clients:
+            print ('client is: ', c)
+            c.publish(clients.index(c))
+            time.sleep(10)
 
     elif x == "d":
         for c in clients:
