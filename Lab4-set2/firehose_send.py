@@ -6,6 +6,9 @@ import boto3
 import backoff
 
 
+# Code to connect to Firehose and batch a payload (list of dicts) to firehose. This will then get streamed to an s3 bucket
+# TODO: add keys back into firehose class, modify to take payload a
+
 class config:
     def __init__(self) -> None:
         self.region = 'us-east-2'
@@ -21,8 +24,8 @@ class FirehoseClient:
         config (object): Configuration object with delivery stream name and region.
         delivery_stream_name (str): Name of the Firehose delivery stream.
         region (str): AWS region for Firehose and CloudWatch clients.
-        firehose (boto3.client): Boto3 Firehose client.
-        cloudwatch (boto3.client): Boto3 CloudWatch client.
+        firehose (boto3.client): Boto3 Firehose client. 
+        cloudwatch (boto3.client): Boto3 CloudWatch client. - removed
     """
 
     def __init__(self, config):
