@@ -9,7 +9,7 @@ import numpy as np
 #TODO 1: modify the following parameters
 #Starting and end index, modify this
 
-topic = 'vehicle/emission/data'
+topics = 'vehicle/emission/data'
 device_st = 0
 device_end = 5
 
@@ -30,7 +30,7 @@ class MQTTClient:
 
         self.state = 0
         self.client = AWSIoTMQTTClient(self.device_name)
-        #TODO 2: modify your broker address
+        #TOD 2: modify your broker address
         self.client.configureEndpoint("apb8nhcywqwx-ats.iot.us-east-2.amazonaws.com", 8883)
         self.client.configureCredentials("certs_and_keys/AmazonRootCA1.pem", key, cert)
         self.client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
@@ -41,7 +41,7 @@ class MQTTClient:
         
 
     def customOnMessage(self,message):
-        #TODO 3: fill in the function to show your received message
+        #TOD 3: fill in the function to show your received message
         payload = {"message" : 'Hello!'}
         print("client {} received payload {} from topic {}".format(self.device_name,message ,'vehicle/emission/data' ))
         print('DID THIS WORK!!!!!!!!!')
@@ -90,7 +90,11 @@ for device_id in range(device_st, device_end):
     print(device_id,certificate_formatter.format(device_id,device_id),key_formatter.format(device_id,device_id) )
     client = MQTTClient(device_id,certificate_formatter.format(device_id) ,key_formatter.format(device_id))
     client.client.connect()
-    client.client.subscribeAsync(topic=topics,0,client.customSubackCallback)
+
+
+    #TODO: CREATE SUBSCRIBEASYNC FOR TOPICS SPECIFIC TO EACH VEHICLE
+    # client.client.subscribeAsync(topics.format(device_id),0,client.customSubackCallback)
+    client.client.subscribeAsync(topics,0,client.customSubackCallback)
     # client.s("vehicle/emission/data")
     clients.append(client)
     
