@@ -82,6 +82,7 @@ class MQTTClient:
         "status": "200",
         "route": "MaxCO2",
         "message": jsonListofDict}
+        print ('payload being sent is:',finalPayload['message'],finalPayload['message_id'], finalPayload['status'],finalPayload['route'])
         # print ('vehicle'+str(iter), finalPayload)
         # print(f"Publishing: {jsonListofDict} to {topic} for Vehicle{self.device_id}")
         self.client.publishAsync(topic, json.dumps(finalPayload), 0, ackCallback=self.customPubackCallback)
@@ -120,7 +121,6 @@ while True:
         for c in clients:
             print ('client is: ', c)
             c.publish(clients.index(c))
-            time.sleep(10)
 
     elif x == "d":
         for c in clients:
@@ -129,10 +129,3 @@ while True:
         exit()
     else:
         print("wrong key pressed")
-
-    time.sleep(3)
-
-
-
-
-
