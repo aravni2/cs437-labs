@@ -106,7 +106,7 @@ for device_id in range(device_st,device_end):
     #TODO: CREATE SUBSCRIBEASYNC FOR TOPICS SPECIFIC TO EACH VEHICLE
     # print ('subbing for device: ', topics.format(device_id))
     print ("subscribing to:", "core/vehicle{}/MaxCO2".format(device_id))
-    client.client.subscribeAsync("core/vehicle{}/MaxCO2".format(device_id),0,client.customSubackCallback)
+    client.client.subscribeAsync("core/vehicle{}/MaxCO2".format(device_id),1,client.customSubackCallback)
     # client.client.subscribeAsync(topics,0,client.customSubackCallback)
     # client.s("vehicle/emission/data")
     clients.append(client)
