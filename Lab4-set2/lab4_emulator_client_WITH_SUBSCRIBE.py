@@ -82,12 +82,12 @@ class MQTTClient:
         "status": "200",
         "route": "MaxCO2",
         "message": jsonListofDict}
-        print ('payload being sent is:',finalPayload['message'],finalPayload['message_id'], finalPayload['status'],finalPayload['route'])
+        print ('payload being sent is:',finalPayload['message_id'], finalPayload['status'],finalPayload['route'])
         # print ('vehicle'+str(iter), finalPayload)
         # print(f"Publishing: {jsonListofDict} to {topic} for Vehicle{self.device_id}")
-        self.client.publishAsync(topic, json.dumps(finalPayload), 0, ackCallback=self.customPubackCallback)
-            # Sleep to simulate real-time data publishings
-            # time.sleep(1)
+        self.client.publishAsync(topic, json.dumps(finalPayload), 1, ackCallback=self.customPubackCallback)
+        # Sleep to simulate real-time data publishings
+        time.sleep(1)
             
 print("Loading vehicle data...")
 data = []
@@ -107,7 +107,7 @@ for device_id in range(device_st,device_end):
     #TODO: CREATE SUBSCRIBEASYNC FOR TOPICS SPECIFIC TO EACH VEHICLE
     # print ('subbing for device: ', topics.format(device_id))
     print ("subscribing to:", "core/vehicle{}/MaxCO2".format(device_id))
-    client.client.subscribeAsync("core/vehicle{}/MaxCO2".format(device_id),0,client.customSubackCallback)
+    client.client.subscribeAsync("core/vehicle{}/MaxCO2".format(device_id),1,client.customSubackCallback)
     # client.client.subscribeAsync(topics,0,client.customSubackCallback)
     # client.s("vehicle/emission/data")
     clients.append(client)
