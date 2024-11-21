@@ -41,8 +41,8 @@ class FirehoseClient:
         self.delivery_stream_name = config.delivery_stream_name
         self.region = config.region
         self.firehose = boto3.client("firehose", region_name=self.region,
-            aws_access_key_id = 'AKIA3TD2SGGPW3F2JPNQ', 
-            aws_secret_access_key = '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')
+            aws_access_key_id = '', 
+            aws_secret_access_key = '')
         # self.cloudwatch = boto3.client("cloudwatch", region_name=self.region)
 
 
